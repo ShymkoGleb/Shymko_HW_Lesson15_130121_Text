@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.random.Random
 
-
 /*Створити програму яка містить список (RecyclerView),  поля введення імені та фамілії
 і кнопку яка додає у список елемент з іменем та фамілією.
 Можна використати домашнє завдання з лекції RecyclerView як основу.
@@ -28,13 +27,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setTextWatchers()
+        onStart()
+    }
+
+    override fun onStart() {
+        super.onStart()
         val personList = mutableListOf<Person>()
         val adapter = PersonAdapter(personList)
         rvPerson.adapter = adapter
         rvPerson.layoutManager = LinearLayoutManager(this)
-
+        btnAddNewPerson.isClickable = false
         etFirstName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                val firtsName = etFirstName.text.toString()
+                val secondName = etSecondName.text.toString()
+                if (firtsName.toCharArray()[0].isUpperCase()) {
+                    Log.d("CustomLog","isUpperCase is ${firtsName.toCharArray()[0].isUpperCase()}" )
+                }
+                if (secondName.toCharArray()[0].isUpperCase()) {
+                    Log.d("CustomLog","isUpperCase is ${secondName.toCharArray()[0].isUpperCase()}" )
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -44,6 +56,9 @@ class MainActivity : AppCompatActivity() {
                 tv1.text = s
             }
         })
+
+
+
 
         btnAddNewPerson.setOnClickListener()
         {
@@ -75,3 +90,5 @@ class MainActivity : AppCompatActivity() {
 
     }
 }
+
+
