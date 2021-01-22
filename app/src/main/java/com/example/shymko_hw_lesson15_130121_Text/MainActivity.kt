@@ -22,73 +22,91 @@ import kotlin.random.Random
 При не проходжені валіадціїї забороняти додавання нового елементу в список.*/
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        val personList = mutableListOf<Person>()
+        val adapter = PersonAdapter(personList)
+        var firstNameIsOK: Boolean = false
+        var secondNameIsOK: Boolean = false
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setTextWatchers()
-        onStart()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val personList = mutableListOf<Person>()
-        val adapter = PersonAdapter(personList)
         rvPerson.adapter = adapter
         rvPerson.layoutManager = LinearLayoutManager(this)
-        btnAddNewPerson.isClickable = false
+        setTextWatchers()
+        btnAddNewPerson.setOnClickListener {
+            makeTextSpanable()
+        }
+    }
+
+    fun setTextWatchers() {
         etFirstName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                val firtsName = etFirstName.text.toString()
-                val secondName = etSecondName.text.toString()
-                if (firtsName.toCharArray()[0].isUpperCase()) {
-                    Log.d("CustomLog","isUpperCase is ${firtsName.toCharArray()[0].isUpperCase()}" )
-                }
-                if (secondName.toCharArray()[0].isUpperCase()) {
-                    Log.d("CustomLog","isUpperCase is ${secondName.toCharArray()[0].isUpperCase()}" )
-                }
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                tv1.text = s
+                var firtsName = etFirstName.text.toString()
+                try {
+                    if ((firtsName.toCharArray()[0].isUpperCase()) && (firtsName.length > 1)) {
+                        firstNameIsOK = true
+                    } else {
+                        firstNameIsOK = false
+                        btnAddNewPerson.isEnabled = false
+                    }
+                } catch (e: ArrayIndexOutOfBoundsException) {
+                    btnAddNewPerson.isEnabled = false
+                    Log.d("CustomLOG", "ArrayIndexOutOfBoundsException")
+                }
+                btnAddNewPerson.isEnabled = firstNameIsOK && secondNameIsOK
             }
         })
+        etSecondName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
 
-
-
-        btnAddNewPerson.setOnClickListener()
-        {
-            val firtsName = etFirstName.text.toString()
-            val secondName = etSecondName.text.toString()
-            val fullName = "$firtsName  " + "$secondName"
-            Log.d("fullName", fullName)
-            val startIndex = fullName.length - secondName.length// e.g. only
-            val endIndex = fullName.length // e.g. only
-            val flag = 0  // 0: no flag
-            val color: Int =
-                Color.rgb(Random.nextInt(0, 256), Random.nextInt(0, 256), Random.nextInt(0, 256))
-            val spansColor = ForegroundColorSpan(color)
-            val spansUnderlineSpan = UnderlineSpan()
-            val spannableFullName = SpannableString(fullName)
-            spannableFullName.setSpan(spansColor, startIndex, endIndex, flag)
-            spannableFullName.setSpan(spansUnderlineSpan, startIndex, endIndex, flag)
-            val person = Person(spannableFullName)
-            personList.add(person)
-            adapter.notifyItemInserted(personList.size - 1)
-        }
-    }
-
-    fun setTextWatchers() {
-
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                var secondName = etSecondName.text.toString()
+                try {
+                    if ((secondName.toCharArray()[0].isUpperCase()) && (secondName.length > 1)) {   /// /*  && (secondNameLenght.length > 3*/   && secondName.toCharArray()[0].isUpperCase()
+                        secondNameIsOK = true
+                    } else {
+                        secondNameIsOK = false
+                        btnAddNewPerson.isEnabled = false
+                    }
+                } catch (e: ArrayIndexOutOfBoundsException) {
+                    btnAddNewPerson.isEnabled = false
+                    Log.d("CustomLOG", "ArrayIndexOutOfBoundsException")
+                }
+                btnAddNewPerson.isEnabled = firstNameIsOK && secondNameIsOK
+            }
+        })
     }
 
     fun makeTextSpanable() {
-
+        var firtsName = etFirstName.text.toString()
+        var secondName = etSecondName.text.toString()
+        val fullName = "$firtsName  " + "$secondName"
+        Log.d("fullName", fullName)
+        val startIndex = fullName.length - secondName.length// e.g. only
+        val endIndex = fullName.length // e.g. only
+        val flag = 0  // 0: no flag
+        val color: Int =
+            Color.rgb(Random.nextInt(0, 256), Random.nextInt(0, 256), Random.nextInt(0, 256))
+        val spansColor = ForegroundColorSpan(color)
+        val spansUnderlineSpan = UnderlineSpan()
+        val spannableFullName = SpannableString(fullName)
+        spannableFullName.setSpan(spansColor, startIndex, endIndex, flag)
+        spannableFullName.setSpan(spansUnderlineSpan, startIndex, endIndex, flag)
+        val person = Person(spannableFullName)
+        personList.add(person)
+        adapter.notifyItemInserted(personList.size - 1)
     }
 }
-
 

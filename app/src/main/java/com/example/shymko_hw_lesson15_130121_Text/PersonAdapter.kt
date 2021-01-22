@@ -12,7 +12,8 @@ class PersonAdapter(
     inner class PersonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_recicler, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.layout_recicler, parent, false)
         return PersonViewHolder(view)
     }
 
@@ -23,7 +24,6 @@ class PersonAdapter(
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         holder.itemView.apply {
             tvFirstName.text = person[position].fullName
-          //  tvSecondName.text = person[position].secondName
         }
     }
 }
